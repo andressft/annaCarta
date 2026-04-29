@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Para Anna</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Manrope:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #130f12;
+      --bg-soft: #1c161a;
+      --paper: #f8efe6;
+      --paper-shadow: rgba(25, 11, 10, 0.18);
+      --ink: #40261d;
+      --ink-soft: #6c4c41;
+      --rose: #bc7269;
+      --rose-deep: #8c4c46;
+      --gold: #b89660;
+      --line: rgba(188, 114, 105, 0.24);
+      --glow: rgba(188, 114, 105, 0.22);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Cormorant Garamond", serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at top, rgba(188, 114, 105, 0.18), transparent 26%),
+        radial-gradient(circle at 80% 20%, rgba(184, 150, 96, 0.12), transparent 22%),
+        linear-gradient(180deg, #1a1418 0%, var(--bg) 100%);
+      overflow-x: hidden;
+    }
+
+    .backdrop {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .grain,
+    .vignette {
+      position: absolute;
+      inset: 0;
+    }
+
+    .grain {
+      opacity: 0.05;
+      background-image:
+        linear-gradient(rgba(255, 255, 255, 0.8) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.8) 1px, transparent 1px);
+      background-size: 4px 4px;
+      mix-blend-mode: soft-light;
+    }
+
+    .vignette {
+      background: radial-gradient(circle, transparent 48%, rgba(0, 0, 0, 0.36) 100%);
+    }
+
+    .petal-stream {
+      position: absolute;
+      inset: 0;
+    }
+
+    .petal {
+      position: absolute;
+      top: -12vh;
+      width: 14px;
+      height: 20px;
+      border-radius: 60% 40% 55% 45% / 50% 60% 40% 50%;
+      background: radial-gradient(circle at 30% 30%, #ffd8d0, #cc847d 70%);
+      opacity: 0;
+      filter: blur(0.2px);
+      animation: petalFall linear infinite;
+    }
+
+    .petal:nth-child(1) { left: 8%; animation-duration: 11s; animation-delay: 0s; }
+    .petal:nth-child(2) { left: 18%; animation-duration: 14s; animation-delay: 2s; width: 10px; height: 14px; }
+    .petal:nth-child(3) { left: 31%; animation-duration: 10s; animation-delay: 3s; }
+    .petal:nth-child(4) { left: 46%; animation-duration: 13s; animation-delay: 1.2s; width: 16px; height: 22px; }
+    .petal:nth-child(5) { left: 59%; animation-duration: 12s; animation-delay: 4.5s; }
+    .petal:nth-child(6) { left: 72%; animation-duration: 15s; animation-delay: 5s; width: 11px; height: 16px; }
+    .petal:nth-child(7) { left: 84%; animation-duration: 9s; animation-delay: 1.5s; }
+
+    @keyframes petalFall {
+      0% {
+        transform: translate3d(0, 0, 0) rotate(0deg);
+        opacity: 0;
+      }
+      12% {
+        opacity: 0.72;
+      }
+      100% {
+        transform: translate3d(48px, 118vh, 0) rotate(320deg);
+        opacity: 0;
+      }
+    }
+
+    .layout {
+      position: relative;
+      z-index: 1;
+      width: min(100%, 1180px);
+      margin: 0 auto;
+      padding: 48px 22px 72px;
+    }
+
+    .intro {
+      margin: 0 auto 28px;
+      max-width: 780px;
+      text-align: center;
+      color: #f5e9de;
+      animation: riseIn 0.9s ease both;
+    }
+
+    .intro h1 {
+      margin: 0;
+      font-size: clamp(3rem, 7vw, 5.8rem);
+      font-weight: 500;
+      line-height: 0.95;
+      letter-spacing: -0.04em;
+    }
+
+    .letter-shell {
+      position: relative;
+      max-width: 760px;
+      margin: 0 auto;
+      animation: riseIn 1.05s ease 0.14s both;
+    }
+
+    .letter-shell::before {
+      content: "";
+      position: absolute;
+      inset: -20px 24px auto;
+      height: 120px;
+      background: radial-gradient(circle, var(--glow), transparent 70%);
+      filter: blur(22px);
+      z-index: -1;
+    }
+
+    .seal {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 28px;
+    }
+
+    .seal-mark {
+      display: grid;
+      place-items: center;
+      width: 78px;
+      height: 78px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 32% 30%, #dcb57a, var(--gold) 65%, #8a6a3b 100%);
+      box-shadow:
+        0 10px 26px rgba(184, 150, 96, 0.25),
+        inset 0 1px 0 rgba(255, 255, 255, 0.34);
+      color: #fff8f0;
+      font-size: 1.8rem;
+    }
+
+    .seal-copy {
+      font-family: "Manrope", sans-serif;
+      font-size: 11px;
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+      color: rgba(248, 239, 230, 0.68);
+    }
+
+    .letter {
+      position: relative;
+      padding: 62px 64px 56px;
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.32), transparent 20%),
+        var(--paper);
+      border: 1px solid rgba(184, 150, 96, 0.2);
+      box-shadow:
+        0 3px 8px rgba(22, 11, 8, 0.08),
+        0 18px 46px var(--paper-shadow),
+        0 48px 96px rgba(10, 4, 4, 0.14);
+      overflow: hidden;
+    }
+
+    .letter::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0.02)),
+        repeating-linear-gradient(
+          to bottom,
+          transparent 0,
+          transparent 34px,
+          rgba(188, 114, 105, 0.06) 34px,
+          rgba(188, 114, 105, 0.06) 35px
+        );
+      pointer-events: none;
+    }
+
+    .letter::after {
+      content: "";
+      position: absolute;
+      inset: 16px;
+      border: 1px solid rgba(184, 150, 96, 0.18);
+      pointer-events: none;
+    }
+
+    .corner {
+      position: absolute;
+      width: 32px;
+      height: 32px;
+      color: rgba(184, 150, 96, 0.4);
+    }
+
+    .corner::before,
+    .corner::after {
+      content: "";
+      position: absolute;
+      background: currentColor;
+    }
+
+    .corner::before {
+      width: 100%;
+      height: 1px;
+      top: 0;
+      left: 0;
+    }
+
+    .corner::after {
+      width: 1px;
+      height: 100%;
+      top: 0;
+      left: 0;
+    }
+
+    .corner.top-left { top: 28px; left: 28px; }
+    .corner.top-right { top: 28px; right: 28px; transform: scaleX(-1); }
+    .corner.bottom-left { bottom: 28px; left: 28px; transform: scaleY(-1); }
+    .corner.bottom-right { right: 28px; bottom: 28px; transform: scale(-1); }
+
+    .letter-inner {
+      position: relative;
+      z-index: 1;
+    }
+
+    .letter-head {
+      text-align: center;
+      margin-bottom: 42px;
+    }
+
+    .date {
+      font-family: "Manrope", sans-serif;
+      font-size: 11px;
+      letter-spacing: 0.34em;
+      text-transform: uppercase;
+      color: var(--gold);
+    }
+
+    .title {
+      margin-top: 18px;
+      font-size: clamp(2.7rem, 6vw, 4.4rem);
+      line-height: 0.96;
+      font-weight: 500;
+      color: var(--ink);
+    }
+
+    .title span {
+      display: block;
+      color: var(--rose);
+      font-style: italic;
+      font-weight: 600;
+    }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin-top: 22px;
+      color: var(--rose);
+      font-size: 14px;
+    }
+
+    .divider::before,
+    .divider::after {
+      content: "";
+      width: 58px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(188, 114, 105, 0.42), transparent);
+    }
+
+    .body-copy p {
+      margin: 0 0 26px;
+      font-size: clamp(1.12rem, 2.4vw, 1.36rem);
+      line-height: 1.9;
+      color: var(--ink-soft);
+      text-align: justify;
+      text-indent: 1.8em;
+    }
+
+    .body-copy p:last-child {
+      margin-bottom: 0;
+    }
+
+    .highlight {
+      color: var(--rose-deep);
+      font-weight: 600;
+      font-style: italic;
+    }
+
+    .signature {
+      margin-top: 44px;
+      display: grid;
+      justify-items: end;
+      gap: 8px;
+    }
+
+    .signature small,
+    .footer-note {
+      font-family: "Manrope", sans-serif;
+      font-size: 11px;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: rgba(108, 76, 65, 0.72);
+    }
+
+    .signature strong {
+      font-size: clamp(2rem, 4vw, 2.7rem);
+      font-style: italic;
+      font-weight: 500;
+      color: var(--rose);
+    }
+
+    .letter-foot {
+      margin-top: 34px;
+      text-align: center;
+    }
+
+    .footer-glyph {
+      display: inline-flex;
+      align-items: center;
+      gap: 14px;
+      color: var(--rose);
+      margin-bottom: 14px;
+      opacity: 0.8;
+    }
+
+    .footer-glyph::before,
+    .footer-glyph::after {
+      content: "";
+      width: 70px;
+      height: 1px;
+      background: var(--line);
+    }
+
+    .floating-notes {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    .note {
+      position: absolute;
+      font-size: 14px;
+      color: rgba(248, 239, 230, 0.36);
+      animation: floatNote ease-in-out infinite;
+    }
+
+    .note:nth-child(1) { left: 9%; top: 22%; animation-duration: 6s; }
+    .note:nth-child(2) { right: 12%; top: 32%; animation-duration: 8s; animation-delay: 1.4s; }
+    .note:nth-child(3) { left: 14%; bottom: 18%; animation-duration: 7s; animation-delay: 2.2s; }
+    .note:nth-child(4) { right: 18%; bottom: 22%; animation-duration: 9s; animation-delay: 0.8s; }
+
+    @keyframes floatNote {
+      0%, 100% { transform: translateY(0px); opacity: 0.28; }
+      50% { transform: translateY(-10px); opacity: 0.58; }
+    }
+
+    .cat-friends {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    .cat {
+      position: absolute;
+      display: grid;
+      place-items: center;
+      width: 54px;
+      height: 54px;
+      border-radius: 999px;
+      background: rgba(248, 239, 230, 0.08);
+      border: 1px solid rgba(248, 239, 230, 0.12);
+      box-shadow: 0 14px 30px rgba(0, 0, 0, 0.16);
+      backdrop-filter: blur(8px);
+      font-size: 1.65rem;
+      animation: catFloat ease-in-out infinite;
+    }
+
+    .cat::after {
+      content: "♥";
+      position: absolute;
+      right: -6px;
+      top: -8px;
+      font-size: 0.72rem;
+      color: rgba(255, 214, 214, 0.85);
+    }
+
+    .cat.one {
+      left: -34px;
+      top: 120px;
+      animation-duration: 6s;
+    }
+
+    .cat.two {
+      right: -34px;
+      top: 210px;
+      animation-duration: 7.5s;
+      animation-delay: 1.2s;
+    }
+
+    .cat.three {
+      left: 8px;
+      bottom: 78px;
+      animation-duration: 6.8s;
+      animation-delay: 0.6s;
+    }
+
+    .cat.four {
+      right: 12px;
+      bottom: 38px;
+      animation-duration: 8.2s;
+      animation-delay: 1.8s;
+    }
+
+    @keyframes catFloat {
+      0%, 100% {
+        transform: translateY(0px) rotate(-3deg);
+      }
+      50% {
+        transform: translateY(-10px) rotate(3deg);
+      }
+    }
+
+    @keyframes riseIn {
+      from {
+        opacity: 0;
+        transform: translateY(24px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 720px) {
+      .layout {
+        padding: 30px 16px 56px;
+      }
+
+      .letter {
+        padding: 44px 28px 40px;
+      }
+
+      .corner {
+        width: 24px;
+        height: 24px;
+      }
+
+      .corner.top-left,
+      .corner.top-right {
+        top: 20px;
+      }
+
+      .corner.bottom-left,
+      .corner.bottom-right {
+        bottom: 20px;
+      }
+
+      .corner.top-left,
+      .corner.bottom-left {
+        left: 20px;
+      }
+
+      .corner.top-right,
+      .corner.bottom-right {
+        right: 20px;
+      }
+
+      .body-copy p {
+        text-align: left;
+        text-indent: 1.2em;
+      }
+
+      .cat {
+        width: 44px;
+        height: 44px;
+        font-size: 1.35rem;
+      }
+
+      .cat.one {
+        left: -8px;
+        top: 132px;
+      }
+
+      .cat.two {
+        right: -8px;
+        top: 226px;
+      }
+
+      .cat.three {
+        left: 4px;
+        bottom: 84px;
+      }
+
+      .cat.four {
+        right: 4px;
+        bottom: 54px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation: none !important;
+        transition: none !important;
+        scroll-behavior: auto !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="backdrop" aria-hidden="true">
+    <div class="grain"></div>
+    <div class="vignette"></div>
+    <div class="petal-stream">
+      <span class="petal"></span>
+      <span class="petal"></span>
+      <span class="petal"></span>
+      <span class="petal"></span>
+      <span class="petal"></span>
+      <span class="petal"></span>
+      <span class="petal"></span>
+    </div>
+  </div>
+
+  <main class="layout">
+    <div class="floating-notes" aria-hidden="true">
+      <span class="note">♥</span>
+      <span class="note">✦</span>
+      <span class="note">♥</span>
+      <span class="note">✦</span>
+    </div>
+
+    <header class="intro">
+      <h1>Una carta para guardar</h1>
+    </header>
+
+    <section class="letter-shell" aria-label="Carta para Anna">
+      <div class="cat-friends" aria-hidden="true">
+        <span class="cat one">🐱</span>
+        <span class="cat two">😺</span>
+        <span class="cat three">🐾</span>
+        <span class="cat four">😽</span>
+      </div>
+
+      <div class="seal">
+        <div class="seal-mark">♥</div>
+        <div class="seal-copy">Con amor · solo para ti</div>
+      </div>
+
+      <article class="letter">
+        <span class="corner top-left" aria-hidden="true"></span>
+        <span class="corner top-right" aria-hidden="true"></span>
+        <span class="corner bottom-left" aria-hidden="true"></span>
+        <span class="corner bottom-right" aria-hidden="true"></span>
+
+        <div class="letter-inner">
+          <header class="letter-head">
+            <div class="date">Abril · 2026</div>
+            <div class="title">
+              Para ti,
+              <span>Anna</span>
+            </div>
+            <div class="divider" aria-hidden="true">✦</div>
+          </header>
+
+          <div class="body-copy">
+            <p>
+              Quería escribirte esto porque a veces las palabras se me quedan cortas cuando intento explicarte lo
+              <span class="highlight"> feliz que me siento de tenerte a mi lado</span>. No sé cómo describirlo, pero el simple
+              hecho de imaginar un futuro juntos me llena de una paz y una tranquilidad que no había sentido antes.
+            </p>
+
+            <p>
+              Tú eres la razón por la que cada día trato de dar lo mejor de mí. Me motivas a ser una mejor versión de mí mismo,
+              porque mi mayor deseo es poder construir un camino donde
+              <span class="highlight"> no tengas preocupaciones</span> y donde siempre te sientas cuidada.
+            </p>
+
+            <p>
+              Quiero que sepas que, para mí, eres <span class="highlight">increíblemente perfecta</span>. Me encanta
+              absolutamente todo de ti: tus ojos, tu pelo, tu nariz y tu boca. Me pierdo en la forma en que miras cuando sonríes,
+              en tu calidez, en tu sentido del humor y en esa personalidad única que tienes. No hay un solo detalle tuyo que no
+              me fascine.
+            </p>
+
+            <p>
+              Mi mayor esperanza es que lo nuestro sea <span class="highlight">eterno</span> y que nada logre separarnos.
+              Sé que habrá desafíos, pero quiero que los afrontemos juntos. No quiero que este amor se quede en el vacío;
+              quiero que lo cuidemos para siempre.
+            </p>
+          </div>
+
+          <div class="signature">
+            <small>Con todo mi amor</small>
+            <strong>Te amo muchísimo, Anna.</strong>
+          </div>
+
+          <footer class="letter-foot">
+            <div class="footer-glyph" aria-hidden="true">♥</div>
+            <div class="footer-note">Para siempre · eternamente tuyo</div>
+          </footer>
+        </div>
+      </article>
+    </section>
+  </main>
+</body>
+</html>
